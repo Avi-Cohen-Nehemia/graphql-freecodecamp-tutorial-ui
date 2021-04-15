@@ -30,7 +30,6 @@ const BookList = () => {
                         <h3>{book.title}</h3>
                         <p>{`Genre: ${book.genre}`}</p>
                         <p>{`Author: ${book.author.name}`}</p>
-                        <br/>
                     </li>
                 )) }
             </ul>
