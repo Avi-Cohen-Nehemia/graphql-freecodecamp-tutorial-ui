@@ -20,3 +20,13 @@ export const GET_ALL_BOOKS = gql`
         }  
     }
 `;
+
+export const ADD_BOOK = gql`
+    {
+        mutation addBook($title: String!, $genre: String!, author_id: String!) {
+            title
+            genre
+            author_id
+        }  
+    }
+`;
