@@ -1,7 +1,7 @@
 import React, { useReducer } from "react";
 // import apollo hooks and methods
-import { useQuery, useMutation, gql } from '@apollo/client';
-import { GET_ALL_AUTHORS, ADD_BOOK } from "../queries";
+import { useQuery, useMutation } from '@apollo/client';
+import { GET_ALL_AUTHORS, ADD_BOOK, CACHE_NEW_BOOK } from "../queries";
 
 const AddBookInitialState = {
     title: "",
@@ -31,11 +31,7 @@ const AddBook = () => {
                     books(existingBooks = []) {
                         const newBookRef = cache.writeFragment({
                             data: addBook,
-                            fragment: gql`
-                            fragment NewBook on Book {
-                                id
-                            }
-                            `
+                            fragment: CACHE_NEW_BOOK
                         });
                         return [...existingBooks, newBookRef];
                     }

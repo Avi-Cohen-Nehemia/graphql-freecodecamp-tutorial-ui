@@ -33,3 +33,9 @@ export const ADD_BOOK = gql`
         }  
     }
 `;
+
+export const CACHE_NEW_BOOK = gql`
+fragment NewBook on Book {
+    id
+}
+`;
