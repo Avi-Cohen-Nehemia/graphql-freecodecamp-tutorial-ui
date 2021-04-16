@@ -1,27 +1,24 @@
-import React, { useReducer } from "react";
+import React, { useState } from "react";
 // import apollo hooks and methods
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_ALL_AUTHORS, ADD_BOOK, CACHE_NEW_BOOK } from "../queries";
 
-const AddBookInitialState = {
-    title: "",
-    genre: "",
-    author_id: "",
-}
-
-const reducer = (state, action) => {
-    switch (action.type) {
-        case "HANDLE_CHANGE" : return {
-            ...state,
-            ...action.payload
-        }
-        default : return;
-    }
-}
-
 const AddBook = () => {
 
-    const [state, dispatch] = useReducer(reducer, AddBookInitialState);
+    const [inputs, setInputs] = useState({
+        title: "",
+        genre: "",
+        author_id: "",
+    });
+
+    const handleChange = (e, input) => {
+        let value = e.currentTarget.value;
+        setInputs({
+            ...inputs,
+            [input]: value
+        });
+    }
+
     const { loading, error, data: authors } = useQuery(GET_ALL_AUTHORS);
     const [addBook] = useMutation(ADD_BOOK, {
         // update cache to avoid using refetchQueries to update the component
@@ -40,26 +37,15 @@ const AddBook = () => {
         }
     });
 
-    const handleChange = (e, input) => {
-        let value = e.currentTarget.value;
-        dispatch({
-            type: "HANDLE_CHANGE",
-            payload: {
-                [input]: value
-            }
-        });
-    }
-
     const handleSubmit = (e) => {
         e.preventDefault();
         addBook({
-            variables: state,
+            variables: inputs,
         });
-        dispatch({
-            type: "HANDLE_CHANGE",
-            payload: {
-                ...AddBookInitialState
-            }
+        setInputs({
+            title: "",
+            genre: "",
+            author_id: "",
         });
     }
 
@@ -73,7 +59,7 @@ const AddBook = () => {
                 <input
                     type="text"
                     onChange={(e) => handleChange(e, "title")}
-                    value={state.title}
+                    value={inputs.title}
                 />
             </div>
 
@@ -82,7 +68,7 @@ const AddBook = () => {
                 <input
                     type="text"
                     onChange={(e) => handleChange(e, "genre")}
-                    value={state.genre}
+                    value={inputs.genre}
                 />
             </div>
 
