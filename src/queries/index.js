@@ -22,11 +22,14 @@ export const GET_ALL_BOOKS = gql`
 `;
 
 export const ADD_BOOK = gql`
-    {
-        mutation addBook($title: String!, $genre: String!, author_id: String!) {
+    mutation($title: String!, $genre: String!, $author_id: ID!) {
+        addBook(title: $title, genre: $genre, author_id: $author_id) {
+            id
             title
             genre
-            author_id
+            author {
+                id
+            }
         }  
     }
 `;
