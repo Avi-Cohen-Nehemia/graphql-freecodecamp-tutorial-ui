@@ -1,6 +1,7 @@
 import React from "react";
 // import apollo hooks and methods
 import { useQuery, useMutation, gql } from '@apollo/client';
+import { GET_ALL_AUTHORS } from "../queries";
 
 // create a new query (get all books in this instance)
 // const ADD_BOOK = gql`
@@ -12,15 +13,6 @@ import { useQuery, useMutation, gql } from '@apollo/client';
 //         }  
 //     }
 // `;
-
-const GET_ALL_AUTHORS = gql`
-    {
-        authors {
-            id
-            name
-        }  
-    }
-`;
 
 
 const AddBook = () => {
@@ -46,7 +38,7 @@ const AddBook = () => {
                 <label>Author:</label>
                 <select>
                     { data.authors.map((author) => (
-                        <option>{author.name}</option>
+                        <option value={author.id}>{author.name}</option>
                     )) }
                 </select>
             </div>

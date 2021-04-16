@@ -1,19 +1,8 @@
 import React from "react";
 // import apollo hooks and methods
-import { useQuery, gql } from '@apollo/client';
-
-// create a new query (get all books in this instance)
-const GET_ALL_BOOKS = gql`
-    {
-        books {
-            title
-            genre
-            author{
-                name
-            }
-        }  
-    }
-`;
+import { useQuery } from '@apollo/client';
+// import the queries we need
+import { GET_ALL_BOOKS } from "../queries";
 
 const BookList = () => {
 
