@@ -1,7 +1,7 @@
 import React, { useReducer } from "react";
 // import apollo hooks and methods
-import { useQuery, useMutation } from '@apollo/client';
-import { GET_ALL_AUTHORS, ADD_BOOK, GET_ALL_BOOKS } from "../queries";
+import { useQuery, useMutation, gql } from '@apollo/client';
+import { GET_ALL_AUTHORS, ADD_BOOK } from "../queries";
 
 const AddBookInitialState = {
     title: "",
@@ -23,7 +23,26 @@ const AddBook = () => {
 
     const [state, dispatch] = useReducer(reducer, AddBookInitialState);
     const { loading, error, data: authors } = useQuery(GET_ALL_AUTHORS);
-    const [addBook] = useMutation(ADD_BOOK);
+    const [addBook] = useMutation(ADD_BOOK, {
+        // update cache to avoid using refetchQueries to update the component
+        update(cache, {data: {addBook}}) {
+            cache.modify({
+                fields: {
+                    books(existingBooks = []) {
+                        const newBookRef = cache.writeFragment({
+                            data: addBook,
+                            fragment: gql`
+                            fragment NewBook on Book {
+                                id
+                            }
+                            `
+                        });
+                        return [...existingBooks, newBookRef];
+                    }
+                }
+            });
+        }
+    });
 
     const handleChange = (e, input) => {
         let value = e.currentTarget.value;
@@ -38,12 +57,7 @@ const AddBook = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         addBook({
-            variables: {
-                title: state.title,
-                genre: state.genre,
-                author_id: state.author_id,
-            },
-            refetchQueries: [{query: GET_ALL_BOOKS}]
+            variables: state,
         });
         dispatch({
             type: "HANDLE_CHANGE",
